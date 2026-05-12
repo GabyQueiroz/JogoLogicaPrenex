@@ -260,6 +260,27 @@ input[type="text"]:focus {
   font-size: 1.1rem;
 }
 
+#hud-lives {
+  color: var(--coral);
+  letter-spacing: 0;
+}
+
+#hud-lives.life-hit {
+  animation: life-hit 420ms ease;
+}
+
+@keyframes life-hit {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(1.22);
+    color: #c41432;
+  }
+}
+
 .progress {
   overflow: hidden;
   height: 12px;

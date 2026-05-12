@@ -119,6 +119,7 @@ const state = {
   mistakes: 0,
   lives: 3,
   hintUsed: false,
+  gameOverPending: false,
   startedAt: 0,
   board: [],
 };
@@ -156,6 +157,7 @@ function startGame(player) {
   state.solved = 0;
   state.mistakes = 0;
   state.lives = 3;
+  state.gameOverPending = false;
   state.startedAt = Date.now();
   sessionStages = [...stages];
   $("#hud-player").textContent = state.player;
@@ -166,6 +168,7 @@ function startGame(player) {
 function renderStage() {
   const stage = sessionStages[state.index];
   state.hintUsed = false;
+  state.gameOverPending = false;
   state.board = Array(stage.slots.length).fill(null);
 
   $("#level-label").textContent = `${stage.world} · ${state.index + 1}/${sessionStages.length}`;
@@ -177,6 +180,7 @@ function renderStage() {
   $("#feedback").hidden = true;
   $("#feedback").textContent = "";
   $("#next-button").disabled = true;
+  $("#next-button").textContent = "Próxima";
   $("#hint-button").disabled = false;
   updateHud();
   renderSlots(stage);
@@ -186,7 +190,7 @@ function renderStage() {
 function updateHud() {
   $("#hud-score").textContent = state.score;
   $("#hud-streak").textContent = state.streak;
-  $("#hud-lives").textContent = "♥".repeat(state.lives) || "0";
+  $("#hud-lives").textContent = `${"♥".repeat(state.lives)}${"♡".repeat(3 - state.lives)}`;
 }
 
 function renderSlots(stage) {
@@ -243,8 +247,26 @@ function placePiece(piece, forcedIndex = null) {
   state.streak = 0;
   state.lives -= 1;
   updateHud();
-  pulseFeedback(`Essa peça não encaixa no slot ${index + 1}. Observe a ordem do prefixo.`, false);
-  if (state.lives <= 0) finishGame();
+  pulseFeedback(`Você errou: "${piece}" não encaixa no slot ${index + 1}. Vida perdida.`, false);
+  flashLives();
+  if (state.lives <= 0) {
+    state.gameOverPending = true;
+    $("#next-button").textContent = "Ver resultado";
+    $("#next-button").disabled = false;
+    $("#hint-button").disabled = true;
+    document.querySelectorAll(".piece").forEach((button) => {
+      button.disabled = true;
+      button.draggable = false;
+    });
+    pulseFeedback(`Você errou: "${piece}" não encaixa no slot ${index + 1}. As vidas acabaram. Clique em "Ver resultado".`, false);
+  }
+}
+
+function flashLives() {
+  const lives = $("#hud-lives");
+  lives.classList.remove("life-hit");
+  void lives.offsetWidth;
+  lives.classList.add("life-hit");
 }
 
 function removePiece(index) {
@@ -292,6 +314,10 @@ function showHint() {
 }
 
 function nextStage() {
+  if (state.gameOverPending) {
+    finishGame();
+    return;
+  }
   if (state.index + 1 >= sessionStages.length) {
     finishGame();
     return;
