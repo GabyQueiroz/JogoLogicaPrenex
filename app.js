@@ -475,12 +475,6 @@ $("#next-button").addEventListener("click", nextStage);
 $("#play-again").addEventListener("click", () => showScreen("start"));
 $("#copy-result").addEventListener("click", copyResult);
 $("#export-ranking").addEventListener("click", exportRanking);
-$("#clear-ranking").addEventListener("click", () => {
-  if (confirm("Limpar todos os resultados salvos neste navegador?")) {
-    setRanking([]);
-    renderRanking();
-  }
-});
 $("#import-ranking").addEventListener("change", (event) => {
   const [file] = event.target.files;
   if (file) importRanking(file);
