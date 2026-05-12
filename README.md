@@ -4,7 +4,9 @@ Jogo didático em HTML, CSS e JavaScript puro sobre Forma Normal Prenex em lógi
 
 ## Como usar
 
-Abra `index.html` no navegador ou publique a pasta no GitHub Pages. O jogo pede o nome do aluno, sorteia 10 desafios, calcula pontuação por acerto e sequência, e salva um ranking no navegador.
+Abra `index.html` no navegador ou publique a pasta no GitHub Pages. O jogo pede o nome do aluno e usa fases de montagem: o aluno arrasta ou clica em peças de quantificadores e matriz para preencher os slots da forma prenex.
+
+O placar considera fases concluídas, vidas restantes, combo, uso de dicas e erros.
 
 ## Publicar no GitHub Pages
 
@@ -32,4 +34,5 @@ O jogo cobre:
 - conjunção e disjunção;
 - negação com inversão de quantificadores;
 - implicação;
-- renomeação de variáveis para evitar erro.
+- renomeação de variáveis para evitar erro;
+- desafio final de montagem com variável repetida.

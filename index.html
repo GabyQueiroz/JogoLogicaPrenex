@@ -20,8 +20,8 @@
             <span class="eyebrow">Lógica de Predicados</span>
             <h1>Missão Prenex</h1>
             <p>
-              Coloque os quantificadores na frente, proteja a matriz e prove que você
-              domina a Forma Normal Prenex.
+              Arraste peças, preencha slots, proteja a matriz e escape das armadilhas
+              de variáveis repetidas.
             </p>
             <form id="player-form" class="player-form">
               <label for="player-name">Nome do jogador</label>
@@ -46,16 +46,16 @@
         </div>
         <div class="quick-cards" aria-label="Resumo da aula">
           <article>
-            <strong>∀ ∃ na frente</strong>
-            <span>O prefixo reúne todos os quantificadores.</span>
+            <strong>Arraste as peças</strong>
+            <span>Monte o prefixo na ordem correta.</span>
           </article>
           <article>
-            <strong>Matriz limpa</strong>
-            <span>A matriz fica sem quantificadores.</span>
+            <strong>Cuide das vidas</strong>
+            <span>Erros custam corações e quebram o combo.</span>
           </article>
           <article>
-            <strong>Renomeie variáveis</strong>
-            <span>Evite capturar variáveis iguais.</span>
+            <strong>Vença o chefão</strong>
+            <span>Renomeie variáveis para fechar a fase final.</span>
           </article>
         </div>
       </section>
@@ -69,7 +69,8 @@
           <div class="score-strip">
             <div><span>Jogador</span><strong id="hud-player">-</strong></div>
             <div><span>Pontos</span><strong id="hud-score">0</strong></div>
-            <div><span>Sequência</span><strong id="hud-streak">0</strong></div>
+            <div><span>Combo</span><strong id="hud-streak">0</strong></div>
+            <div><span>Vidas</span><strong id="hud-lives">♥♥♥</strong></div>
           </div>
         </header>
 
@@ -85,7 +86,16 @@
           </div>
         </article>
 
-        <div id="options" class="options"></div>
+        <section class="board" aria-label="Tabuleiro de montagem">
+          <div class="assembly">
+            <h3>Prefixo + matriz</h3>
+            <div id="prefix-slots" class="prefix-slots"></div>
+          </div>
+          <div class="rack">
+            <h3>Bancada de peças</h3>
+            <div id="piece-rack" class="piece-rack"></div>
+          </div>
+        </section>
 
         <div id="feedback" class="feedback" hidden></div>
 
@@ -102,8 +112,8 @@
           <p id="result-summary"></p>
           <div class="medal-row">
             <div class="medal"><span id="final-score">0</span><small>pontos</small></div>
-            <div class="medal"><span id="final-accuracy">0%</span><small>acertos</small></div>
-            <div class="medal"><span id="final-best-streak">0</span><small>melhor sequência</small></div>
+            <div class="medal"><span id="final-accuracy">0%</span><small>conclusão</small></div>
+            <div class="medal"><span id="final-best-streak">0</span><small>melhor combo</small></div>
           </div>
           <div class="result-actions">
             <button id="play-again" type="button">Jogar de novo</button>

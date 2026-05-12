@@ -1,182 +1,111 @@
-const STORAGE_KEY = "missao-prenex-ranking-v1";
+const STORAGE_KEY = "missao-prenex-ranking-v2";
 
-const challenges = [
+const stages = [
   {
-    level: "Fase 1",
-    title: "Reconheça a forma",
+    world: "Treino",
+    title: "Portal do Prefixo",
     icon: "∀",
-    prompt: "Qual fórmula já está em Forma Normal Prenex?",
-    formula: "Escolha a alternativa em que todos os quantificadores aparecem antes da matriz.",
-    options: [
-      "∀x∃y(P(x) ∧ Q(y))",
-      "P(x) ∧ ∃yQ(y)",
-      "¬∀xP(x)",
-      "P(x) → ∃yR(y)",
-    ],
-    answer: 0,
-    hint: "Prenex vem de colocar o prefixo de quantificadores à frente.",
-    explanation: "Na alternativa correta, ∀x∃y é o prefixo e P(x) ∧ Q(y) é a matriz.",
-  },
-  {
-    level: "Fase 1",
-    title: "Prefixo e matriz",
-    icon: "α",
-    prompt: "Na fórmula ∀x∃y(P(x) ∨ R(y)), qual é a matriz?",
-    formula: "∀x∃y(P(x) ∨ R(y))",
-    options: ["∀x∃y", "P(x) ∨ R(y)", "∃y(P(x) ∨ R(y))", "x e y"],
-    answer: 1,
-    hint: "A matriz é a parte sem quantificadores.",
-    explanation: "A matriz é P(x) ∨ R(y), pois o prefixo é ∀x∃y.",
-  },
-  {
-    level: "Fase 2",
-    title: "Conjunção",
-    icon: "∧",
-    prompt: "Transforme a conjunção em uma forma prenex equivalente.",
+    prompt: "Monte a forma prenex arrastando ou clicando nas peças certas.",
     formula: "∀xP(x) ∧ ∃yQ(y)",
-    options: [
-      "∀x∃y(P(x) ∧ Q(y))",
-      "∃y∀x(P(x) → Q(y))",
-      "∀x(P(x) ∧ ∃yQ(y))",
-      "∃x∀y(P(x) ∨ Q(y))",
-    ],
-    answer: 0,
-    hint: "Traga os quantificadores para frente e envolva a matriz com parênteses.",
-    explanation: "Como as variáveis são diferentes, basta formar o prefixo ∀x∃y e a matriz P(x) ∧ Q(y).",
+    slots: ["∀x", "∃y", "(P(x) ∧ Q(y))"],
+    pieces: ["∃y", "(P(x) ∨ Q(y))", "∀x", "(P(x) ∧ Q(y))", "∃x"],
+    hint: "Na conjunção, traga os quantificadores para a frente e mantenha ∧ na matriz.",
+    explanation: "A resposta é ∀x∃y(P(x) ∧ Q(y)). As variáveis já são diferentes.",
   },
   {
-    level: "Fase 2",
-    title: "Variáveis repetidas",
+    world: "Treino",
+    title: "Matriz Protegida",
+    icon: "α",
+    prompt: "Leve para os slots o prefixo e a matriz correta.",
+    formula: "∀x∃y(P(x) ∨ R(y))",
+    slots: ["∀x", "∃y", "(P(x) ∨ R(y))"],
+    pieces: ["(P(x) ∧ R(y))", "∃y", "∀x", "P(x)", "(P(x) ∨ R(y))"],
+    hint: "A matriz não tem quantificadores.",
+    explanation: "Prefixo: ∀x∃y. Matriz: P(x) ∨ R(y).",
+  },
+  {
+    world: "Renomeação",
+    title: "Variável Capturada",
     icon: "↻",
-    prompt: "Qual conversão evita o erro de usar a mesma variável quantificada duas vezes?",
+    prompt: "Evite usar a mesma variável quantificada duas vezes.",
     formula: "∀xP(x) ∧ ∃xQ(x)",
-    options: [
-      "∀x∃x(P(x) ∧ Q(x))",
-      "∀x∃w(P(x) ∧ Q(w))",
-      "∃x∀x(P(x) ∧ Q(x))",
-      "∀x(P(x) ∧ Q(x))",
-    ],
-    answer: 1,
-    hint: "Quando as variáveis quantificadas são iguais, renomeie uma delas.",
-    explanation: "Renomear o segundo x para w evita capturar a variável e preserva o sentido da fórmula.",
+    slots: ["∀x", "∃w", "(P(x) ∧ Q(w))"],
+    pieces: ["∀x", "∃x", "(P(x) ∧ Q(x))", "∃w", "(P(x) ∧ Q(w))"],
+    hint: "Renomeie uma das ocorrências de x antes de montar a fórmula.",
+    explanation: "A conversão segura é ∀x∃w(P(x) ∧ Q(w)).",
   },
   {
-    level: "Fase 3",
-    title: "Disjunção",
+    world: "Disjunção",
+    title: "Ponte do Ou",
     icon: "∨",
-    prompt: "Escolha a forma prenex da disjunção.",
+    prompt: "Construa a disjunção em forma prenex.",
     formula: "∃z∀xP(z,x) ∨ ∃yQ(y)",
-    options: [
-      "∃z∀x∃y(P(z,x) ∨ Q(y))",
-      "∀x∃z∃y(P(z,x) ∧ Q(y))",
-      "∃y(P(z,x) ∨ Q(y))",
-      "∃z∀x(P(z,x) → Q(y))",
-    ],
-    answer: 0,
-    hint: "Na disjunção, os quantificadores também vão para frente.",
-    explanation: "O prefixo correto é ∃z∀x∃y, seguido da matriz P(z,x) ∨ Q(y).",
+    slots: ["∃z", "∀x", "∃y", "(P(z,x) ∨ Q(y))"],
+    pieces: ["∀x", "∃y", "(P(z,x) ∧ Q(y))", "∃z", "(P(z,x) ∨ Q(y))", "∀z"],
+    hint: "A disjunção mantém ∨ na matriz depois que o prefixo vem para frente.",
+    explanation: "A forma correta é ∃z∀x∃y(P(z,x) ∨ Q(y)).",
   },
   {
-    level: "Fase 3",
-    title: "Negação",
+    world: "Negação",
+    title: "Inversor Existencial",
     icon: "¬",
-    prompt: "O que acontece ao negar um quantificador existencial?",
+    prompt: "A negação atravessa o quantificador. Escolha as peças transformadas.",
     formula: "¬∃xP(x)",
-    options: ["∀x¬P(x)", "∃x¬P(x)", "¬∀xP(x)", "∀xP(x)"],
-    answer: 0,
-    hint: "A negação troca ∃ por ∀ e segue para perto do predicado.",
-    explanation: "¬∃xP(x) é equivalente a ∀x¬P(x).",
+    slots: ["∀x", "¬P(x)"],
+    pieces: ["∃x", "P(x)", "∀x", "¬P(x)", "¬∀x"],
+    hint: "Negar ∃ transforma em ∀ e leva a negação para o predicado.",
+    explanation: "¬∃xP(x) equivale a ∀x¬P(x).",
   },
   {
-    level: "Fase 3",
-    title: "Negação dupla de ideia",
+    world: "Negação",
+    title: "Inversor Universal",
     icon: "¬",
-    prompt: "Qual é a transformação correta?",
+    prompt: "Passe a negação para perto do predicado.",
     formula: "¬∀xP(x)",
-    options: ["∃x¬P(x)", "∀x¬P(x)", "¬∃xP(x)", "∃xP(x)"],
-    answer: 0,
-    hint: "Negar 'para todo' vira 'existe' com negação no predicado.",
-    explanation: "Se não é verdade para todo x, então existe algum x para o qual P(x) é falso.",
+    slots: ["∃x", "¬P(x)"],
+    pieces: ["∀x", "¬P(x)", "∃x", "P(x)", "¬∃x"],
+    hint: "Negar ∀ transforma em ∃.",
+    explanation: "¬∀xP(x) equivale a ∃x¬P(x).",
   },
   {
-    level: "Fase 4",
-    title: "Implicação no antecedente",
+    world: "Implicação",
+    title: "Portal do Antecedente",
     icon: "→",
-    prompt: "Na implicação, o quantificador do antecedente vai para frente como?",
+    prompt: "No antecedente, o quantificador inverte ao vir para frente.",
     formula: "∀yP(y) → ∀xR(x)",
-    options: [
-      "∃y∀x(P(y) → R(x))",
-      "∀y∀x(P(y) → R(x))",
-      "∃y∀x(P(y) ∧ R(x))",
-      "∀x∃y(R(x) → P(y))",
-    ],
-    answer: 0,
-    hint: "O antecedente é invertido ao passar para frente.",
-    explanation: "Reescrevendo A → B como ¬A ∨ B, o ∀ do antecedente se torna ∃.",
+    slots: ["∃y", "∀x", "(P(y) → R(x))"],
+    pieces: ["∀y", "∃y", "∀x", "(P(y) ∧ R(x))", "(P(y) → R(x))"],
+    hint: "Pense em A → B como ¬A ∨ B.",
+    explanation: "O ∀ do antecedente passa como ∃: ∃y∀x(P(y) → R(x)).",
   },
   {
-    level: "Fase 4",
-    title: "Implicação no consequente",
+    world: "Implicação",
+    title: "Duelo de Y",
     icon: "→",
-    prompt: "Escolha a forma prenex considerando a renomeação de variável.",
+    prompt: "Renomeie o y do consequente e monte a fórmula final.",
     formula: "∀yP(y) → ∀x∃yR(y,x)",
-    options: [
-      "∃y∀x∃z(P(y) → R(z,x))",
-      "∀y∀x∃y(P(y) → R(y,x))",
-      "∃x∀y∃z(P(y) ∧ R(z,x))",
-      "∀x∃z∀y(R(z,x) → P(y))",
-    ],
-    answer: 0,
-    hint: "O consequente mantém seus quantificadores; a variável repetida precisa ser renomeada.",
-    explanation: "O y do consequente foi renomeado para z, e o quantificador do antecedente ∀y passou como ∃y.",
+    slots: ["∃y", "∀x", "∃z", "(P(y) → R(z,x))"],
+    pieces: ["∃y", "∀x", "∃y", "(P(y) → R(y,x))", "∃z", "(P(y) → R(z,x))"],
+    hint: "O y do consequente deve virar z para não confundir com o y do antecedente.",
+    explanation: "A forma correta é ∃y∀x∃z(P(y) → R(z,x)).",
   },
   {
-    level: "Desafio final",
-    title: "Diagnóstico",
+    world: "Chefão",
+    title: "Prefixo Completo",
     icon: "★",
-    prompt: "Qual alternativa descreve melhor a Forma Normal Prenex?",
-    formula: "Q1x1 Q2x2 ... Qnxn α",
-    options: [
-      "Um prefixo de quantificadores seguido de uma matriz sem quantificadores.",
-      "Uma fórmula sem conectivos lógicos.",
-      "Uma fórmula em que só aparece o quantificador universal.",
-      "Uma fórmula que sempre começa com negação.",
+    prompt: "Monte a maior fórmula antes que as vidas acabem.",
+    formula: "∀x(P(x) ∧ Q(x)) ∨ ∃x(R(x) ∧ S(y))",
+    slots: ["∀x", "∃w", "((P(x) ∧ Q(x)) ∨ (R(w) ∧ S(y)))"],
+    pieces: [
+      "∃x",
+      "∀x",
+      "∃w",
+      "(P(x) ∧ Q(x))",
+      "((P(x) ∧ Q(x)) ∨ (R(w) ∧ S(y)))",
+      "((P(x) ∨ Q(x)) ∧ R(w))",
     ],
-    answer: 0,
-    hint: "O slide chama α de matriz.",
-    explanation: "A forma prenex separa prefixo de quantificadores e matriz livre de quantificadores.",
-  },
-  {
-    level: "Desafio final",
-    title: "Caça ao erro",
-    icon: "!",
-    prompt: "Por que ∀xP(x) ∧ ∃xQ(x) ⇔ ∀x∃x(P(x) ∧ Q(x)) está errado?",
-    formula: "∀xP(x) ∧ ∃xQ(x) ⇔ ∀x∃x(P(x) ∧ Q(x))",
-    options: [
-      "Porque a variável x foi reutilizada e precisa ser renomeada.",
-      "Porque conjunções não podem ir para a forma prenex.",
-      "Porque o símbolo ∧ deve virar ∨.",
-      "Porque todo ∃ deve ser apagado.",
-    ],
-    answer: 0,
-    hint: "O próprio slide alerta: cuidado quando as variáveis quantificadas forem iguais.",
-    explanation: "A conversão correta pode ser ∀x∃w(P(x) ∧ Q(w)).",
-  },
-  {
-    level: "Desafio final",
-    title: "Exercício de aula",
-    icon: "✓",
-    prompt: "Qual é uma boa primeira ação para converter a fórmula abaixo?",
-    formula: "¬(∀x(P(x,z) ∧ R(x,y)) ∨ (∃xP(x,z) ∨ ∀xR(x,y)))",
-    options: [
-      "Distribuir a negação e inverter quantificadores quando ela alcançar ∀ ou ∃.",
-      "Apagar todos os quantificadores para sobrar só a matriz.",
-      "Trocar todos os conectivos por implicação.",
-      "Manter a negação fora e apenas copiar os quantificadores.",
-    ],
-    answer: 0,
-    hint: "A negação precisa caminhar para perto dos predicados.",
-    explanation: "Para chegar à prenex, a negação deve ser empurrada para dentro, invertendo ∀ e ∃ quando atravessa quantificadores.",
+    hint: "Há dois x quantificados. Renomeie o x do segundo bloco.",
+    explanation: "Uma resposta segura é ∀x∃w((P(x) ∧ Q(x)) ∨ (R(w) ∧ S(y))).",
   },
 ];
 
@@ -186,10 +115,12 @@ const state = {
   score: 0,
   streak: 0,
   bestStreak: 0,
-  correct: 0,
-  answered: false,
+  solved: 0,
+  mistakes: 0,
+  lives: 3,
   hintUsed: false,
   startedAt: 0,
+  board: [],
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -200,21 +131,21 @@ const screens = {
   result: $("#result-screen"),
 };
 
-const showScreen = (name) => {
+function showScreen(name) {
   Object.values(screens).forEach((screen) => screen.classList.remove("is-active"));
   screens[name].classList.add("is-active");
-};
+}
 
-const shuffle = (items) => {
+function shuffle(items) {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
-};
+}
 
-let sessionChallenges = shuffle(challenges).slice(0, 10);
+let sessionStages = stages;
 
 function startGame(player) {
   state.player = player.trim();
@@ -222,105 +153,164 @@ function startGame(player) {
   state.score = 0;
   state.streak = 0;
   state.bestStreak = 0;
-  state.correct = 0;
+  state.solved = 0;
+  state.mistakes = 0;
+  state.lives = 3;
   state.startedAt = Date.now();
-  sessionChallenges = shuffle(challenges).slice(0, 10);
+  sessionStages = [...stages];
   $("#hud-player").textContent = state.player;
   showScreen("game");
-  renderChallenge();
+  renderStage();
 }
 
-function renderChallenge() {
-  const challenge = sessionChallenges[state.index];
-  state.answered = false;
+function renderStage() {
+  const stage = sessionStages[state.index];
   state.hintUsed = false;
+  state.board = Array(stage.slots.length).fill(null);
 
-  $("#level-label").textContent = `${challenge.level} · ${state.index + 1}/${sessionChallenges.length}`;
-  $("#challenge-title").textContent = challenge.title;
-  $("#challenge-icon").textContent = challenge.icon;
-  $("#challenge-prompt").textContent = challenge.prompt;
-  $("#formula-box").textContent = challenge.formula;
-  $("#hud-score").textContent = state.score;
-  $("#hud-streak").textContent = state.streak;
-  $("#progress-bar").style.width = `${(state.index / sessionChallenges.length) * 100}%`;
+  $("#level-label").textContent = `${stage.world} · ${state.index + 1}/${sessionStages.length}`;
+  $("#challenge-title").textContent = stage.title;
+  $("#challenge-icon").textContent = stage.icon;
+  $("#challenge-prompt").textContent = stage.prompt;
+  $("#formula-box").textContent = stage.formula;
+  $("#progress-bar").style.width = `${(state.index / sessionStages.length) * 100}%`;
   $("#feedback").hidden = true;
   $("#feedback").textContent = "";
   $("#next-button").disabled = true;
   $("#hint-button").disabled = false;
+  updateHud();
+  renderSlots(stage);
+  renderPieces(stage);
+}
 
-  const options = $("#options");
-  options.innerHTML = "";
-  challenge.options.forEach((option, optionIndex) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "option";
-    button.textContent = option;
-    button.addEventListener("click", () => answer(optionIndex));
-    options.appendChild(button);
+function updateHud() {
+  $("#hud-score").textContent = state.score;
+  $("#hud-streak").textContent = state.streak;
+  $("#hud-lives").textContent = "♥".repeat(state.lives) || "0";
+}
+
+function renderSlots(stage) {
+  const slots = $("#prefix-slots");
+  slots.innerHTML = "";
+  stage.slots.forEach((slot, index) => {
+    const node = document.createElement("button");
+    node.type = "button";
+    node.className = "slot";
+    node.dataset.index = index;
+    node.textContent = state.board[index] ?? (index === stage.slots.length - 1 ? "matriz" : `peça ${index + 1}`);
+    node.addEventListener("dragover", (event) => event.preventDefault());
+    node.addEventListener("drop", (event) => {
+      event.preventDefault();
+      placePiece(event.dataTransfer.getData("text/plain"), index);
+    });
+    node.addEventListener("click", () => removePiece(index));
+    slots.appendChild(node);
   });
 }
 
-function answer(optionIndex) {
-  if (state.answered) return;
-
-  const challenge = sessionChallenges[state.index];
-  const buttons = [...document.querySelectorAll(".option")];
-  const isCorrect = optionIndex === challenge.answer;
-  state.answered = true;
-
-  buttons.forEach((button, index) => {
-    button.disabled = true;
-    if (index === challenge.answer) button.classList.add("is-correct");
-    if (index === optionIndex && !isCorrect) button.classList.add("is-wrong");
+function renderPieces(stage) {
+  const rack = $("#piece-rack");
+  rack.innerHTML = "";
+  shuffle(stage.pieces).forEach((piece) => {
+    const node = document.createElement("button");
+    node.type = "button";
+    node.className = "piece";
+    node.textContent = piece;
+    node.draggable = true;
+    node.addEventListener("dragstart", (event) => {
+      event.dataTransfer.setData("text/plain", piece);
+    });
+    node.addEventListener("click", () => placePiece(piece));
+    rack.appendChild(node);
   });
+}
 
-  if (isCorrect) {
-    const streakBonus = Math.min(state.streak * 15, 60);
-    const hintPenalty = state.hintUsed ? 25 : 0;
-    const gained = 100 + streakBonus - hintPenalty;
-    state.score += gained;
-    state.streak += 1;
-    state.bestStreak = Math.max(state.bestStreak, state.streak);
-    state.correct += 1;
-    $("#feedback").textContent = `Acertou! +${gained} pontos. ${challenge.explanation}`;
-  } else {
-    state.streak = 0;
-    $("#feedback").textContent = `Quase. ${challenge.explanation}`;
+function placePiece(piece, forcedIndex = null) {
+  const stage = sessionStages[state.index];
+  const index = forcedIndex ?? state.board.findIndex((value) => value === null);
+  if (index === -1) return;
+
+  const expected = stage.slots[index];
+  if (piece === expected) {
+    state.board[index] = piece;
+    renderSlots(stage);
+    pulseFeedback(`Peça encaixada: ${piece}`, true);
+    if (state.board.every(Boolean)) completeStage();
+    return;
   }
 
-  $("#hud-score").textContent = state.score;
-  $("#hud-streak").textContent = state.streak;
+  state.mistakes += 1;
+  state.streak = 0;
+  state.lives -= 1;
+  updateHud();
+  pulseFeedback(`Essa peça não encaixa no slot ${index + 1}. Observe a ordem do prefixo.`, false);
+  if (state.lives <= 0) finishGame();
+}
+
+function removePiece(index) {
+  const stage = sessionStages[state.index];
+  if (!state.board[index]) return;
+  state.board[index] = null;
+  renderSlots(stage);
+}
+
+function completeStage() {
+  const stage = sessionStages[state.index];
+  const base = 180;
+  const streakBonus = Math.min(state.streak * 25, 125);
+  const lifeBonus = state.lives * 20;
+  const hintPenalty = state.hintUsed ? 40 : 0;
+  const gained = base + streakBonus + lifeBonus - hintPenalty;
+  state.score += gained;
+  state.streak += 1;
+  state.bestStreak = Math.max(state.bestStreak, state.streak);
+  state.solved += 1;
+  updateHud();
   $("#feedback").hidden = false;
+  $("#feedback").className = "feedback success";
+  $("#feedback").textContent = `Fase concluída! +${gained} pontos. ${stage.explanation}`;
   $("#next-button").disabled = false;
+  $("#hint-button").disabled = true;
+  document.querySelectorAll(".piece").forEach((piece) => {
+    piece.disabled = true;
+    piece.draggable = false;
+  });
+}
+
+function pulseFeedback(message, success) {
+  const feedback = $("#feedback");
+  feedback.hidden = false;
+  feedback.className = success ? "feedback success" : "feedback danger-box";
+  feedback.textContent = message;
 }
 
 function showHint() {
-  const challenge = sessionChallenges[state.index];
+  const stage = sessionStages[state.index];
   state.hintUsed = true;
   $("#hint-button").disabled = true;
-  $("#feedback").textContent = `Dica: ${challenge.hint}`;
-  $("#feedback").hidden = false;
+  pulseFeedback(`Dica: ${stage.hint}`, true);
 }
 
-function nextChallenge() {
-  if (state.index + 1 >= sessionChallenges.length) {
+function nextStage() {
+  if (state.index + 1 >= sessionStages.length) {
     finishGame();
     return;
   }
   state.index += 1;
-  renderChallenge();
+  state.lives = Math.min(3, state.lives + 1);
+  renderStage();
 }
 
 function finishGame() {
   $("#progress-bar").style.width = "100%";
-  const total = sessionChallenges.length;
-  const accuracy = Math.round((state.correct / total) * 100);
+  const total = sessionStages.length;
+  const accuracy = Math.round((state.solved / total) * 100);
   const durationSeconds = Math.round((Date.now() - state.startedAt) / 1000);
   const record = {
     name: state.player,
     score: state.score,
     accuracy,
-    correct: state.correct,
+    correct: state.solved,
     total,
     bestStreak: state.bestStreak,
     durationSeconds,
@@ -328,11 +318,12 @@ function finishGame() {
   };
 
   saveRecord(record);
-  $("#result-title").textContent = `${state.player}, missão concluída!`;
+  $("#result-title").textContent =
+    state.lives <= 0 ? `${state.player}, tente a missão de novo` : `${state.player}, missão concluída!`;
   $("#result-summary").textContent =
     accuracy >= 80
-      ? "Excelente domínio dos quantificadores. A matriz saiu inteira da fase."
-      : "Bom treino. Revise as regras de negação, implicação e renomeação antes da próxima rodada.";
+      ? "Você montou fórmulas prenex com ótimo controle de prefixo, matriz e renomeação."
+      : "Você avançou, mas precisa treinar a ordem dos quantificadores e a inversão pela negação.";
   $("#final-score").textContent = state.score;
   $("#final-accuracy").textContent = `${accuracy}%`;
   $("#final-best-streak").textContent = state.bestStreak;
@@ -373,7 +364,7 @@ function renderRanking() {
 
   ranking.forEach((record) => {
     const item = document.createElement("li");
-    item.innerHTML = `<strong>${escapeHtml(record.name)} · ${record.score} pontos</strong><span>${record.accuracy}% de acerto · melhor sequência ${record.bestStreak} · ${record.date}</span>`;
+    item.innerHTML = `<strong>${escapeHtml(record.name)} · ${record.score} pontos</strong><span>${record.accuracy}% concluído · melhor combo ${record.bestStreak} · ${record.date}</span>`;
     list.appendChild(item);
   });
 }
@@ -386,7 +377,7 @@ function escapeHtml(value) {
 }
 
 function toCsv(records) {
-  const header = ["nome", "pontos", "acertos_percentual", "acertos", "total", "melhor_sequencia", "tempo_segundos", "data"];
+  const header = ["nome", "pontos", "conclusao_percentual", "fases", "total", "melhor_combo", "tempo_segundos", "data"];
   const rows = records.map((record) => [
     record.name,
     record.score,
@@ -465,7 +456,7 @@ function parseCsvLine(line) {
 function copyResult() {
   const ranking = getRanking();
   const latest = ranking.find((record) => record.name === state.player && record.score === state.score) ?? ranking[0];
-  const text = `Missão Prenex - ${latest.name}: ${latest.score} pontos, ${latest.accuracy}% de acerto, melhor sequência ${latest.bestStreak}.`;
+  const text = `Missão Prenex - ${latest.name}: ${latest.score} pontos, ${latest.accuracy}% concluído, melhor combo ${latest.bestStreak}.`;
   navigator.clipboard?.writeText(text);
   $("#copy-result").textContent = "Copiado";
   setTimeout(() => {
@@ -480,7 +471,7 @@ $("#player-form").addEventListener("submit", (event) => {
 });
 
 $("#hint-button").addEventListener("click", showHint);
-$("#next-button").addEventListener("click", nextChallenge);
+$("#next-button").addEventListener("click", nextStage);
 $("#play-again").addEventListener("click", () => showScreen("start"));
 $("#copy-result").addEventListener("click", copyResult);
 $("#export-ranking").addEventListener("click", exportRanking);

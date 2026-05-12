@@ -233,7 +233,7 @@ input[type="text"]:focus {
 
 .score-strip {
   display: grid;
-  grid-template-columns: repeat(3, minmax(94px, auto));
+  grid-template-columns: repeat(4, minmax(84px, auto));
   gap: 10px;
 }
 
@@ -321,34 +321,89 @@ input[type="text"]:focus {
   white-space: nowrap;
 }
 
-.options {
+.board {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+  gap: 16px;
 }
 
-.option {
-  min-height: 78px;
-  border: 2px solid transparent;
+.assembly,
+.rack {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 12px 28px rgba(39, 54, 82, 0.1);
+}
+
+.assembly h3,
+.rack h3 {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  text-transform: uppercase;
+}
+
+.prefix-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.slot {
+  display: grid;
+  place-items: center;
+  min-height: 74px;
+  border: 2px dashed #97abc2;
+  border-radius: 8px;
   color: var(--ink);
-  background: var(--paper);
-  text-align: left;
-  box-shadow: 0 12px 24px rgba(39, 54, 82, 0.08);
+  background:
+    linear-gradient(135deg, rgba(255, 200, 87, 0.16), transparent),
+    #f8fbff;
+  font-family: "Cambria Math", "Times New Roman", serif;
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  text-align: center;
+  overflow-wrap: anywhere;
+  box-shadow: none;
 }
 
-.option:hover {
-  border-color: var(--blue);
-  background: #f6fbff;
+.slot:not(:empty) {
+  border-style: solid;
 }
 
-.option.is-correct {
-  border-color: var(--mint);
+.piece-rack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.piece {
+  min-height: 54px;
+  border: 2px solid #ffffff;
+  color: #172033;
+  background: #ffffff;
+  font-family: "Cambria Math", "Times New Roman", serif;
+  font-size: 1.16rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+  box-shadow: 0 10px 20px rgba(39, 54, 82, 0.12);
+}
+
+.piece:nth-child(3n + 1) {
   background: #e8fff9;
 }
 
-.option.is-wrong {
-  border-color: var(--coral);
-  background: #fff0ee;
+.piece:nth-child(3n + 2) {
+  background: #fff4cc;
+}
+
+.piece:nth-child(3n + 3) {
+  background: #eef3ff;
+}
+
+.piece:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px) rotate(-1deg);
 }
 
 .feedback {
@@ -358,6 +413,16 @@ input[type="text"]:focus {
   background: #fff8e3;
   color: #4f3b08;
   font-weight: 750;
+}
+
+.feedback.success {
+  background: #e8fff9;
+  color: #07574c;
+}
+
+.feedback.danger-box {
+  background: #fff0ee;
+  color: #8a2118;
 }
 
 .game-actions {
@@ -465,7 +530,7 @@ input[type="text"]:focus {
   }
 
   .quick-cards,
-  .options,
+  .board,
   .medal-row {
     grid-template-columns: 1fr;
   }
