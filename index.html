@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Jogo didático sobre Forma Normal Prenex em lógica de predicados."
+    />
+    <title>Missão Prenex</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="assets/prenex-hero.png" as="image" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section id="start-screen" class="screen start-screen is-active">
+        <div class="hero">
+          <div class="hero-copy">
+            <span class="eyebrow">Lógica de Predicados</span>
+            <h1>Missão Prenex</h1>
+            <p>
+              Coloque os quantificadores na frente, proteja a matriz e prove que você
+              domina a Forma Normal Prenex.
+            </p>
+            <form id="player-form" class="player-form">
+              <label for="player-name">Nome do jogador</label>
+              <div class="name-row">
+                <input
+                  id="player-name"
+                  name="player-name"
+                  type="text"
+                  maxlength="32"
+                  autocomplete="name"
+                  placeholder="Digite seu nome"
+                  required
+                />
+                <button type="submit">Começar</button>
+              </div>
+            </form>
+          </div>
+          <img
+            src="assets/prenex-hero.png"
+            alt="Ilustração colorida com símbolos de lógica de predicados"
+          />
+        </div>
+        <div class="quick-cards" aria-label="Resumo da aula">
+          <article>
+            <strong>∀ ∃ na frente</strong>
+            <span>O prefixo reúne todos os quantificadores.</span>
+          </article>
+          <article>
+            <strong>Matriz limpa</strong>
+            <span>A matriz fica sem quantificadores.</span>
+          </article>
+          <article>
+            <strong>Renomeie variáveis</strong>
+            <span>Evite capturar variáveis iguais.</span>
+          </article>
+        </div>
+      </section>
+
+      <section id="game-screen" class="screen game-screen" aria-live="polite">
+        <header class="game-header">
+          <div>
+            <span id="level-label" class="eyebrow">Fase 1</span>
+            <h2 id="challenge-title">Título</h2>
+          </div>
+          <div class="score-strip">
+            <div><span>Jogador</span><strong id="hud-player">-</strong></div>
+            <div><span>Pontos</span><strong id="hud-score">0</strong></div>
+            <div><span>Sequência</span><strong id="hud-streak">0</strong></div>
+          </div>
+        </header>
+
+        <div class="progress" aria-label="Progresso do jogo">
+          <span id="progress-bar"></span>
+        </div>
+
+        <article class="challenge-panel">
+          <div id="challenge-icon" class="symbol-badge" aria-hidden="true">∀</div>
+          <div>
+            <p id="challenge-prompt" class="prompt"></p>
+            <div id="formula-box" class="formula-box"></div>
+          </div>
+        </article>
+
+        <div id="options" class="options"></div>
+
+        <div id="feedback" class="feedback" hidden></div>
+
+        <footer class="game-actions">
+          <button id="hint-button" type="button" class="ghost">Dica</button>
+          <button id="next-button" type="button" disabled>Próxima</button>
+        </footer>
+      </section>
+
+      <section id="result-screen" class="screen result-screen">
+        <div class="result-card">
+          <span class="eyebrow">Resultado</span>
+          <h2 id="result-title">Fim de jogo</h2>
+          <p id="result-summary"></p>
+          <div class="medal-row">
+            <div class="medal"><span id="final-score">0</span><small>pontos</small></div>
+            <div class="medal"><span id="final-accuracy">0%</span><small>acertos</small></div>
+            <div class="medal"><span id="final-best-streak">0</span><small>melhor sequência</small></div>
+          </div>
+          <div class="result-actions">
+            <button id="play-again" type="button">Jogar de novo</button>
+            <button id="copy-result" type="button" class="ghost">Copiar resultado</button>
+          </div>
+        </div>
+
+        <aside class="ranking-panel">
+          <div class="ranking-head">
+            <div>
+              <span class="eyebrow">Placar</span>
+              <h2>Ranking da turma</h2>
+            </div>
+            <button id="clear-ranking" type="button" class="danger">Limpar</button>
+          </div>
+          <ol id="ranking-list" class="ranking-list"></ol>
+          <div class="ranking-tools">
+            <button id="export-ranking" type="button" class="ghost">Exportar CSV</button>
+            <label class="import-button">
+              Importar CSV
+              <input id="import-ranking" type="file" accept=".csv,text/csv" />
+            </label>
+          </div>
+          <p class="ranking-note">
+            No GitHub Pages, o placar fica salvo no navegador usado. Para juntar
+            resultados de vários alunos, use exportar/importar CSV.
+          </p>
+        </aside>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
